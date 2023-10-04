@@ -23,6 +23,10 @@ fn test_img_flip() {
     let data = ["<--", "#####", "<=="].map(|v| v.to_string());
     assert_eq!(vflip(&data), ["<==", "#####", "<--"]);
     assert_eq!(hflip(&data), ["  --<", "#####", "  ==<"]);
+
+    let data2 = ["a", "abcde", "abc", "abcdefg"].map(|v| v.to_string());
+    assert_eq!(vflip(&data2), ["abcdefg", "abc", "abcde", "a"]);
+    assert_eq!(hflip(&data2), ["      a", "  edcba", "    cba", "gfedcba"]);
 }
 
 fn vcat(t1: &[String], t2: &[String]) -> Vec<String> {
@@ -35,14 +39,16 @@ fn vcat(t1: &[String], t2: &[String]) -> Vec<String> {
 fn hcat(t1: &[String], t2: &[String]) -> Vec<String> {
     let mut result: Vec<String> = Vec::new();
     let maxlen = t1.len().max(t2.len());
-    let max = t1.iter().map(|x| x.len()).max().unwrap_or(0);
+    let max = t1.iter().map(|x| x.len()).max().unwrap_or(0).max(t2.iter().map(|x| x.len()).max().unwrap_or(0));
     for i in 0..maxlen {
         let mut a = String::new();
         let mut b = String::new();
         let mut r = String::new();
         if i < t1.len() {
             a = t1[i].to_string();
-        } 
+        } else {
+            a = " ".repeat(max)
+        }
         if i < t2.len() {
             b = t2[i].to_string();
             if i < t1.len() {
@@ -72,7 +78,12 @@ fn test_img_cat() {
         [
             "<--  <--",
             "##########",
-            "<=="
+            "     <=="
         ]
     );
+
+    let data2 = ["a", "abcde", "abc", "abcdefg"].map(|v| v.to_string());
+    assert_eq!(vcat(&data2, &data2), ["a", "abcde", "abc", "abcdefg", "a", "abcde", "abc", "abcdefg"]);
+    assert_eq!(hcat(&data2, &data2[..2]), ["a      a", "abcde  abcde", "abc", "abcdefg"]);
+    assert_eq!(hcat(&data2[..2], &data2), ["a      a", "abcde  abcde", "       abc", "       abcdefg"]);
 }

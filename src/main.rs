@@ -36,6 +36,7 @@ fn vcat(t1: &[String], t2: &[String]) -> Vec<String> {
     result
 }
 
+#[allow(unused_assignments)]
 fn hcat(t1: &[String], t2: &[String]) -> Vec<String> {
     let mut result: Vec<String> = Vec::new();
     let maxlen = t1.len().max(t2.len());
